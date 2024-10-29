@@ -94,3 +94,8 @@
 .plus0 {
   margin: 25%;
 }
+
+.no-visited:link, .no-visited:visited {
+  color: inherit;         /* 링크의 기본 색상 유지 */
+  text-decoration: none;  /* 밑줄 제거 */
+}

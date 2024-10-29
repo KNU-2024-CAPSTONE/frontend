@@ -1,0 +1,76 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.title {
+  color: rgba(0,0,0,1);
+  top: 35px;
+  position: relative;
+  text-align: center;
+  font-family: 'SOYO Maple';
+  font-weight: Bold;
+  font-size: 45px;
+}
+
+.tab {
+  width: 150px;
+  height: 70px;
+  position: absolute;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
+  top: 130px;
+}
+
+.tab1 {
+  background: rgba(228,228,228,1);
+}
+
+.tab2 {
+  background: rgba(204,204,204,1);
+}
+
+.tab3 {
+  background: rgba(164,164,164,1);
+}
+
+.place1 {
+  left: 0px;
+}
+
+.place2 {
+  left: 150px;
+}
+
+.place3 {
+  left: 300px;
+}
+
+.text {
+  width: 150px;
+  color: rgba(0,0,0,1);
+  position: relative;
+  font-family: NanumSquareRound;
+  font-weight: Regular;
+  font-size: 24px;
+  text-align: center;
+  top: 15px;
+  left: 25px;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  background: rgba(228,228,228,1);
+  position: absolute;
+  top: 185px;
+}
+
+.no-visited {
+  color: inherit;         /* 링크의 기본 색상 유지 */
+  text-decoration: none;  /* 밑줄 제거 */
+}
