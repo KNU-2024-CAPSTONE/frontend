@@ -254,6 +254,15 @@
   left: 100px;
   top: 15px;
 }
+
+.result {
+  width: 450px;
+  height: 200px;
+  background: rgb(167, 167, 167);
+  position: relative;
+  left: 100px;
+  top: 55px;
+}
 .text2 {
   left: 80px;
   width: 150px;
@@ -265,4 +274,16 @@
   text-align: center;
   top: 10px;
   margin: 15px;
+}
+.text3 {
+  left: 15px;
+  width: 400px;
+  color: rgb(255, 255, 255);
+  position: relative;
+  font-family: 'NanumSquareRound';
+  font-weight: Regular;
+  font-size: 20px;
+  text-align: left;
+  top: 25px;
+  margin: 5px;
 }

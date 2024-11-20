@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
 import {
@@ -16,6 +16,21 @@ import {
 
 
 function S1() {  
+
+  const [memberlog, setMemberlog] = useState(null);
+  const [purchaselog, setPurchaselog] = useState(null);
+
+  useEffect(() => {
+    fetch('http://3.34.133.252:8081/api/database/member-log')
+    .then((response) => response.json())
+    .then((data) => setMemberlog(data));
+  }, []);
+  useEffect(() => {
+    fetch('http://3.34.133.252:8081/api/database/purchase-log')
+    .then((response) => response.json())
+    .then((data) => setPurchaselog(data));
+  }, []);
+
     return (
       <div className="S1">
          <div className="title2">쇼핑몰1 관리페이지</div>
