@@ -137,6 +137,7 @@
   font-weight: Bold;
   font-size: 30px;
   left: 100px;
+  width: 310px;
 }
 
 .tab {
@@ -198,7 +199,14 @@
 .main_2 {
   display: flex;
   justify-content: center;
-  margin: 10px;
+  height: 260px;
+
+}
+.main_3 {
+  display: flex;
+  justify-content: center;
+  height: 210px;
+
 }
 
 .no-visited {
@@ -209,21 +217,21 @@
 .box {
   width: 600px;
   height: 200px;
-  margin: 30px;
+  margin: 10px;
   left: 20px;
 }
 
 .box2 {
-  width: 400px;
+  width: 500px;
   height: 200px;
-  margin: 30px;
+  margin: 10px;
   left: 20px;
 }
 
 .box3 {
   width: 800px;
   height: 200px;
-  margin: 30px;
+  margin: 10px;
   left: 20px;
 }
 
@@ -234,7 +242,7 @@
   background: rgb(255, 255, 255);
   position: relative;
   left: 100px;
-  top: 15px;
+  top: 5px;
 }
 
 .graph2 {
@@ -258,10 +266,10 @@
 .result {
   width: 450px;
   height: 200px;
-  background: rgb(167, 167, 167);
+  background: rgba(204,204,204,1);
   position: relative;
   left: 100px;
-  top: 55px;
+
 }
 .text2 {
   left: 80px;
@@ -278,7 +286,7 @@
 .text3 {
   left: 15px;
   width: 400px;
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   position: relative;
   font-family: 'NanumSquareRound';
   font-weight: Regular;
@@ -286,4 +294,28 @@
   text-align: left;
   top: 25px;
   margin: 5px;
+}
+.button1 {
+  width: 50px;
+  height: 30px;
+  top: 5px;
+  background-color: rgba(228,228,228,1);;
+  color: rgb(0, 0, 0);
+  font-family: 'NanumSquareRound';
+  font-weight: Regular;
+  font-size: 15px;
+  text-align: center;
+  margin: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+
+}
+
+.bar2 {
+  height: 40px;
+  width: 90%;
+  display: flex;
+  margin: 10px;
 }

@@ -19,6 +19,8 @@ function S3() {
 
   const [recommend, setRecommend] = useState(null);
   const [purchaselog, setPurchaselog] = useState(null);
+  const button_categories = ["10대", "20대", "30대", "40대+", "남성", "여성"];
+  const [selected, setSelected] = useState([]); 
 
   useEffect(() => {
     fetch('http://3.34.133.252:8081/api/database/recommend')
@@ -92,6 +94,14 @@ function S3() {
     ],
   }:{};
 
+  const toggleSelection = (index) => {
+    setSelected((prevSelected) =>
+      prevSelected.includes(index)
+        ? prevSelected.filter((i) => i !== index) // 이미 선택된 경우 제거
+        : [...prevSelected, index] // 선택되지 않은 경우 추가
+    );
+  };
+
     return ( 
       <div className="S3">
         <div className="title2">쇼핑몰1 관리페이지</div>
@@ -107,10 +117,19 @@ function S3() {
          </Link>
 
          <div className="main">
-
-            <div className="main_2">
+         <div className='bar2' style={{gap:'10px'}}>
+              <span className="title_2" style={{left:'120px'}}>유형별 인기상품</span>
+              <div>
+                {button_categories.map((category, index) => (
+                 <button key={index} className="button1"
+                 style={{backgroundColor: selected.includes(index) ? "white" : "rgba(228,228,228,1)",}}
+                 onClick={() => toggleSelection(index)}
+                 >{category}</button>
+                 ))}
+              </div>
+            </div>
+            <div className="main_3">
                 <div className="box2" >
-                    <span className="title_2">유형별 인기 키워드</span>
                     <Pie className="graph" options={options1} data={data1} />
                 </div>
                 <div className="box3">
