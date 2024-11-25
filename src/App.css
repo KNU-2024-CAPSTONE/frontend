@@ -138,6 +138,7 @@
   font-size: 30px;
   left: 100px;
   width: 310px;
+ 
 }
 
 .tab {
@@ -200,6 +201,8 @@
   display: flex;
   justify-content: center;
   height: 260px;
+  margin-top: 10px;
+  margin-bottom: 30px;
 
 }
 .main_3 {
@@ -221,20 +224,6 @@
   left: 20px;
 }
 
-.box2 {
-  width: 500px;
-  height: 200px;
-  margin: 10px;
-  left: 20px;
-}
-
-.box3 {
-  width: 800px;
-  height: 200px;
-  margin: 10px;
-  left: 20px;
-}
-
 
 .graph {
   width: 400px;
@@ -243,6 +232,7 @@
   position: relative;
   left: 100px;
   top: 5px;
+  margin-top: 5px;
 }
 
 .graph2 {
@@ -265,12 +255,13 @@
 
 .result {
   width: 450px;
-  height: 200px;
+  height: 195px;
   background: rgba(204,204,204,1);
   position: relative;
   left: 100px;
-
+  margin-top: 10px;
 }
+
 .text2 {
   left: 80px;
   width: 150px;
@@ -318,4 +309,16 @@
   width: 90%;
   display: flex;
   margin: 10px;
+  margin-top: 20px;
+}
+
+.button2 {
+ background-color: rgb(255, 255, 255);
+ width: 40px;
+ height: 30px;
+ margin-top: 20px;
+ font-size: 15px;
+ text-align: center;
+ line-height: 30px;
+
 }

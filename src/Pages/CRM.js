@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css';
 import clothesimg from '../img/clothes.svg';
@@ -8,8 +8,19 @@ import plusimg from "../img/plus.png";
 
 function CRM() {
 
-  const openLinkInNewTab = (url) => {
-    window.open(url, "_blank", "width=1500,height=800");}
+  const [shoplog, setShoplog] = useState([]);
+  const baseURL = 'http://3.34.133.252:8080'
+  
+  useEffect(() => {
+    fetch(`${baseURL}/api/shop`)
+    .then((response) => response.json())
+    .then((data) => setShoplog(data));
+  }, []);
+
+  const openLinkInNewTab = (url, shopid) => {
+    const newUrl = `${url}?shopid=${shopid}`;
+    window.open(newUrl, "_blank", "width=1500,height=800");
+  };
 
   return (
     <div className="App">
@@ -24,8 +35,8 @@ function CRM() {
         <div className="title">'도훈'님이 관리중인 쇼핑몰</div>
         <div className="container">
           
-          <Link onClick={() => openLinkInNewTab("/S1")} className="no-visited shop shop1">
-            <p className="name">쇼핑몰1</p>
+          <Link onClick={() => openLinkInNewTab("/S1", 1)} className="no-visited shop shop1">
+          <p className="name">{shoplog?.[0]?.name || "로딩 중..."}</p>
             <img className="svg clothes" alt="Clothes" src={clothesimg}  width="60%"/>
           </Link>
           <div className="no-visited shop shop2">
