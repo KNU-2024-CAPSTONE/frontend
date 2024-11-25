@@ -14,26 +14,31 @@ import {
   } from 'chart.js';
   import { Bar, Pie } from 'react-chartjs-2';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
+  import { useSearchParams } from "react-router-dom";
 
 function S3() { 
+
+  const baseURL = 'http://3.34.133.252:8080'
+  const [searchParams] = useSearchParams();
+  const shopid = searchParams.get("shopid");
 
   const [recommend, setRecommend] = useState(null);
   const [purchaselog, setPurchaselog] = useState(null);
   const button_categories = ["10대", "20대", "30대", "40대+", "남성", "여성"];
   const [selected, setSelected] = useState([]); 
-
+  
   useEffect(() => {
-    fetch('http://3.34.133.252:8081/api/database/recommend')
+    fetch(`${baseURL}/api/customer/sale/recommend/${shopid}`)
     .then((response) => response.json())
     .then((data) => setRecommend(data));
   }, []);
 
   useEffect(() => {
-    fetch('http://3.34.133.252:8081/api/database/purchase-log')
+    fetch(`${baseURL}/api/customer/sale/product/${shopid}`)
     .then((response) => response.json())
     .then((data) => setPurchaselog(data));
   }, []);
-
+  console.log(recommend);
   const Frequency = (purchaselog) => {
     const keywordCount = {};
 
@@ -106,18 +111,18 @@ function S3() {
       <div className="S3">
         <div className="title2">쇼핑몰1 관리페이지</div>
          
-         <Link to="/S1" className="no-visited tab tab2 place1">
+         <Link to={`/S1?shopid=1`} className="no-visited tab tab2 place1">
              <span className="text">고객 통계</span>
          </Link>
-         <Link to="/S2" className="no-visited tab tab3 place2">
+         <Link to={`/S2?shopid=1`} className="no-visited tab tab3 place2">
              <span className="text">이탈 관리</span>
          </Link>
-         <Link to="/S3" className="no-visited tab tab1 place3">
+         <Link to={`/S3?shopid=1`} className="no-visited tab tab1 place3">
              <span className="text">맞춤 추천</span>
          </Link>
 
          <div className="main">
-         <div className='bar2' style={{gap:'10px'}}>
+         <div className='bar2' style={{gap:'10px', marginLeft:'60px'}}>
               <span className="title_2" style={{left:'120px'}}>유형별 인기상품</span>
               <div>
                 {button_categories.map((category, index) => (
@@ -129,10 +134,10 @@ function S3() {
               </div>
             </div>
             <div className="main_3">
-                <div className="box2" >
+                <div className="box" style={{width: "500px", marginTop: "0px"}} >
                     <Pie className="graph" options={options1} data={data1} />
                 </div>
-                <div className="box3">
+                <div className="box" style={{width: "800px", marginTop: "0px"}}>
                 <div className="result">
                   <p className='text3'>1위 : {sortedKeywords[0]?.keyword || '없음'}</p>
                   <p className='text3'>2위 : {sortedKeywords[1]?.keyword || '없음'}</p>
@@ -142,7 +147,7 @@ function S3() {
             </div>
 
             <div className="main_2">
-                <div className="box2">
+                <div className="box" style={{width: "500px"}}>
                     <span className="title_2">구매전환 비율 (%)</span>
                     {recommend ? (
                      <Bar className="graph" options={options2} data={data2} />
@@ -150,7 +155,7 @@ function S3() {
                      <p>Loading...</p>
                      )}
                 </div>
-                <div className="box3">
+                <div className="box" style={{width: "800px"}}>
                     <span className="title_2">추천 알고리즘 설정</span>
                 </div>
             </div>
