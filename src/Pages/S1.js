@@ -25,7 +25,7 @@ function S1() {
   /*useEffect(() => {
     fetch(`${baseURL}/api/customer/sale/${shopid}`)
     .then((response) => response.json())
-    .then((data) => consolelog(data));
+    .then((data) => console.log(data));
   }, []);*/
 
   const [selected, setSelected] = useState("월간");
@@ -68,7 +68,7 @@ function S1() {
       }
 
       if (!groupedData[key]) {
-        groupedData[key] = 0;
+        groupedData[key] = 1;
       }
       if (datafield==="purchaseTime") {
         groupedData[key] += entry.totalPrice/10000; 
@@ -99,9 +99,9 @@ function S1() {
     const startDate = sixDaysAgo;
     const endDate = currentDate;
 
-    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+    for (let d = startDate; d < endDate; d.setDate(d.getDate() + 1)) {
       const targetKey = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-      labels.push(`${d.getMonth() + 1}-${d.getDate()}`);
+      labels.push(`${d.getMonth() + 1}/${d.getDate()}`);
       data.push(groupedData[targetKey] || 0); 
     }
   }
