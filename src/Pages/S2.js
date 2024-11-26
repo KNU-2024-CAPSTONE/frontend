@@ -29,7 +29,7 @@ import {
 
 function S2() { 
 
-  const baseURL = 'http://localhost:8080'
+  const baseURL = 'http://localhost:8080';
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
   const inputData = [
