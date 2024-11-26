@@ -42,6 +42,12 @@ function S3() {
   const [isOn, setisOn] = useState(false);
   const [selected, setSelected] = useState([]); 
 
+  useEffect(() => {
+    fetch(`${baseURL}/api/customer/sale/product/${shopid}`)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+  }, []);
+
   const handleClick = (button) => {
     setSelected(button); 
   };
@@ -56,12 +62,28 @@ function S3() {
     );
   };
 
-  const Frequency = (purchaselog) => {
+  const Frequency = (purchaselog, selected) => {
     const keywordCount = {};
 
     if (!purchaselog) return [];
 
-    purchaselog.forEach((item) => {
+    const isGenderMatching = (item) => {
+      if (selected.includes(4) && selected.includes(5)) return true;
+      if (selected.includes(4) && item.gender !== "male") return false;
+      if (selected.includes(5) && item.gender !== "female") return false;
+      return true;
+    };
+
+    const isMatchingCriteria = (item) => {
+      if (selected.includes(0) && (item.age >= 10 && item.age < 20)) { return isGenderMatching(item);}
+      if (selected.includes(1) && (item.age >= 20 && item.age < 30)) { return isGenderMatching(item);}
+      if (selected.includes(2) && (item.age >= 30 && item.age < 40)) { return isGenderMatching(item);}
+      if (selected.includes(3) && (item.age >= 40)) { return isGenderMatching(item);}
+      if (!selected.includes(0) && !selected.includes(1) && !selected.includes(2) && !selected.includes(3)) { return isGenderMatching(item);}
+      return false;
+    };
+
+    purchaselog.filter(isMatchingCriteria).forEach((item) => {
       if (item.product) {
       const keyword = item.product.name;
 
@@ -81,7 +103,7 @@ function S3() {
     return sortedKeywords.slice(0, 3);  
   };
 
-  const sortedKeywords = Frequency(purchaselog);
+  const sortedKeywords = Frequency(purchaselog, selected);
 
     
   const data1 = {
