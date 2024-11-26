@@ -43,17 +43,21 @@ function S3() {
 
   const recommend = useDataFetch(`${baseURL}/api/customer/sale/recommend/${shopid}`);
   const purchaselog = useDataFetch(`${baseURL}/api/customer/sale/product/${shopid}`);
+  const fetchedData = useDataFetch(`${baseURL}/api/recommend/${shopid}`);
   const [productReco, setProductReco] = useState([]);
   const [selected, setSelected] = useState([]); 
 
   useEffect(() => {
-    fetch(`${baseURL}/api/recommend/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setProductReco(data));
-  }, []);
+    if (fetchedData && Object.keys(fetchedData).length > 0) {
+      setProductReco(fetchedData);
+    }
+  }, [fetchedData]);
 
   const toggleHandler = (key) => {
     setProductReco((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+  const handleInputChange = (key, value) => {
+    setProductReco((prev) => ({...prev, [key]: value, }));
   };
   const toggleSelection = (index) => {
     setSelected((prevSelected) =>
@@ -139,6 +143,27 @@ function S3() {
     ],
   }:{};
 
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/recommend/${shopid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productReco),
+      });
+
+      if (response.ok) {
+        alert("설정이 성공적으로 저장되었습니다.");
+      } else {
+        alert("설정 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("서버와 연결에 실패했습니다.");
+    }
+  };
+
     return ( 
       <div className="S3">
         <div className="title2">쇼핑몰1 관리페이지</div>
@@ -188,7 +213,7 @@ function S3() {
                      )}
                 </div>
                 <div className="box" style={{width: "700px"}}>
-                  <div> <span className="title_2">추천 알고리즘 관리</span> <div className="button3">설정</div> </div>
+                  <div> <span className="title_2">추천 알고리즘 관리</span> <div className="button3" onClick={handleSubmit}>설정</div> </div>
                   <div style={{display: 'flex'}}>
                   <div>
                   {toggleData.map((item) => (
@@ -202,8 +227,8 @@ function S3() {
                 ))}
                 </div>
                 <div>
-                <div style = {{margin: '15px', marginLeft: '0px'}}><span className="text4" style={{marginRight: '90px'}}>추천 상품 수</span> <input value={productReco.k} className='blank2'/> <span className='text5'>개</span></div>
-                <div><span className="text4" style={{marginRight: '100px'}}>전환 비율</span> <input value={productReco.conversionRate} style={{width: '60px'}} className='blank2'/> <span className='text5'>%</span> </div>
+                <div style = {{margin: '15px', marginLeft: '0px'}}><span className="text4" style={{marginRight: '90px'}}>추천 상품 수</span> <input value={productReco.k} onChange={(e) => handleInputChange("k", e.target.value)} className='blank2'/> <span className='text5'>개</span></div>
+                <div><span className="text4" style={{marginRight: '100px'}}>전환 비율</span> <input value={productReco.conversionRate} style={{width: '60px'}} onChange={(e) => handleInputChange("conversionRate", e.target.value)} className='blank2'/> <span className='text5'>%</span> </div>
                 </div> </div>
                 </div>
             </div>
