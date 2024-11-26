@@ -27,7 +27,7 @@ function CRM() {
       <div className="bar">
           <nav>
             <ul className="nav">
-                <li><span>서비스명</span></li>
+                <li><span>CRM</span></li>
                 <li><span>마이페이지</span></li>
             </ul>
           </nav>
