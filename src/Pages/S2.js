@@ -44,6 +44,7 @@ function S2() {
   const ofcoslog = useDataFetch(`${baseURL}/api/outflux/customers/${shopid}`);
   const loyallog = useDataFetch(`${baseURL}/api/outflux/loyal/${shopid}`);
   const fetchedData = useDataFetch(`${baseURL}/api/outflux/${shopid}`);
+  const shoplog = useDataFetch(`${baseURL}/api/shop`);
   const [outfluxlog, setOutflux] = useState([]);
 
   const handleClick = (button) => {
@@ -247,7 +248,7 @@ function S2() {
 
     return (
       <div className="S2">
-        <div className="title2">쇼핑몰1 관리페이지</div>
+        <div className="title2">{shoplog?.[shopid-1]?.name || " "} 관리페이지</div>
          
          <Link to={`/S1?shopid=1`} className="no-visited tab tab2 place1">
              <span className="text">고객 통계</span>

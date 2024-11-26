@@ -45,6 +45,7 @@ function S1() {
     setSelected(button); 
   };
 
+  const shoplog = useDataFetch(`${baseURL}/api/shop`);
   const memberlog = useDataFetch(`${baseURL}/api/customer/influx/${shopid}`);
   const purchaselog = useDataFetch(`${baseURL}/api/customer/sale/${shopid}`);
 
@@ -177,7 +178,7 @@ function S1() {
 
     return (
       <div className="S1">
-         <div className="title2">쇼핑몰1 관리페이지</div>
+         <div className="title2">{shoplog?.[shopid-1]?.name || " "} 관리페이지</div>
          
           <Link to={`/S1?shopid=1`} className="no-visited tab tab1 place1">
               <span className="text">고객 통계</span>
