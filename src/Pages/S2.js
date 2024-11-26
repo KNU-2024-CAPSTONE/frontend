@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import '../App.css';
 import {
     Chart as ChartJS,
@@ -13,7 +13,19 @@ import {
     LineElement,
   } from 'chart.js';
   import { Line, Bar } from 'react-chartjs-2';
-  import { useSearchParams } from "react-router-dom";
+
+  const useDataFetch = (endpoint) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      fetch(endpoint)
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((error) => console.error("Fetch error:", error));
+    }, [endpoint]);
+  
+    return data;
+  };
 
 function S2() { 
 
@@ -21,36 +33,14 @@ function S2() {
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
 
-  useEffect(() => {
-    fetch(`${baseURL}/api/outflux/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
-  }, []);
-
   const [selected, setSelected] = useState("월간");
+  const outfluxlog = useDataFetch(`${baseURL}/api/outflux/${shopid}`);
+  const ofcoslog = useDataFetch(`${baseURL}/api/outflux/customers/${shopid}`);
+  const loyallog = useDataFetch(`${baseURL}/api/outflux/loyal/${shopid}`);
+
   const handleClick = (button) => {
     setSelected(button); 
   };
-
-  const [outfluxlog, setOutfluxlog] = useState([]);
-  const [ofcoslog, setOfcoslog] = useState([]);
-  const [loyallog, setLoyallog] = useState([]);
-
-  useEffect(() => {
-    fetch(`${baseURL}/api/outflux/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setOutfluxlog(data));
-  }, []);
-  useEffect(() => {
-    fetch(`${baseURL}/api/outflux/customers/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setOfcoslog(data));
-  }, []);
-  useEffect(() => {
-    fetch(`${baseURL}/api/outflux/loyal/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setLoyallog(data));
-  }, []);
 
   const ChartOfDate = (data0, datafield) => {
     const outflux = {};  const loyal = {};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import '../App.css';
 import {
     Chart as ChartJS,
@@ -14,31 +14,48 @@ import {
   } from 'chart.js';
   import { Bar, Pie } from 'react-chartjs-2';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { useSearchParams } from "react-router-dom";
+  import styled from 'styled-components';
+
+  const useDataFetch = (endpoint) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      fetch(endpoint)
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((error) => console.error("Fetch error:", error));
+    }, [endpoint]);
+  
+    return data;
+  };
 
 function S3() { 
 
   const baseURL = 'http://3.34.133.252:8080'
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
-
-  const [recommend, setRecommend] = useState(null);
-  const [purchaselog, setPurchaselog] = useState(null);
   const button_categories = ["10대", "20대", "30대", "40대+", "남성", "여성"];
-  const [selected, setSelected] = useState([]); 
-  
-  useEffect(() => {
-    fetch(`${baseURL}/api/customer/sale/recommend/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setRecommend(data));
-  }, []);
 
-  useEffect(() => {
-    fetch(`${baseURL}/api/customer/sale/product/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setPurchaselog(data));
-  }, []);
-  console.log(recommend);
+  const recommend = useDataFetch(`${baseURL}/api/customer/sale/recommend/${shopid}`);
+  const purchaselog = useDataFetch(`${baseURL}/api/customer/sale/product/${shopid}`);
+  const productReco = useDataFetch(`${baseURL}/api/recommend/${shopid}`);
+  const [isOn, setisOn] = useState(false);
+  const [selected, setSelected] = useState([]); 
+
+  const handleClick = (button) => {
+    setSelected(button); 
+  };
+  const toggleHandler = () => {
+    setisOn(!isOn)
+  };
+  const toggleSelection = (index) => {
+    setSelected((prevSelected) =>
+      prevSelected.includes(index)
+        ? prevSelected.filter((i) => i !== index)
+        : [...prevSelected, index] 
+    );
+  };
+
   const Frequency = (purchaselog) => {
     const keywordCount = {};
 
@@ -99,14 +116,6 @@ function S3() {
     ],
   }:{};
 
-  const toggleSelection = (index) => {
-    setSelected((prevSelected) =>
-      prevSelected.includes(index)
-        ? prevSelected.filter((i) => i !== index) // 이미 선택된 경우 제거
-        : [...prevSelected, index] // 선택되지 않은 경우 추가
-    );
-  };
-
     return ( 
       <div className="S3">
         <div className="title2">쇼핑몰1 관리페이지</div>
@@ -124,7 +133,7 @@ function S3() {
          <div className="main">
          <div className='bar2' style={{gap:'10px', marginLeft:'60px'}}>
               <span className="title_2" style={{left:'120px'}}>유형별 인기상품</span>
-              <div>
+              <div style={{marginLeft: '110px'}}>
                 {button_categories.map((category, index) => (
                  <button key={index} className="button1"
                  style={{backgroundColor: selected.includes(index) ? "white" : "rgba(228,228,228,1)",}}
@@ -156,7 +165,27 @@ function S3() {
                      )}
                 </div>
                 <div className="box" style={{width: "800px"}}>
-                    <span className="title_2">추천 알고리즘 설정</span>
+                  <div> <span className="title_2">추천 알고리즘 관리</span> <div className="button3">설정</div> </div>
+                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>별점 반영</span>
+                    <ToggleContainer onClick={toggleHandler}> 
+                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
+                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
+                    </ToggleContainer>
+                    <span className="text4" style={{marginRight: '90px'}}>추천 상품 수</span> <input value={productReco.k} className='blank2'/> <span className='text5'>개</span>
+                  </div>
+                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>리뷰 반영</span>
+                    <ToggleContainer onClick={toggleHandler}> 
+                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
+                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
+                    </ToggleContainer>
+                    <span className="text4" style={{marginRight: '100px'}}>전환 비율</span> <input value={productReco.conversionRate} style={{width: '60px'}} className='blank2'/> <span className='text5'>%</span>
+                  </div>
+                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>리뷰 반영</span>
+                    <ToggleContainer onClick={toggleHandler}> 
+                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
+                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
+                    </ToggleContainer>
+                  </div>
                 </div>
             </div>
 
@@ -241,5 +270,37 @@ function S3() {
   };
   
   
+  const ToggleContainer = styled.span`
+  position: absolute;
+  cursor: pointer;
+  margin-top: 10px;
+
+  > .toggle-container {
+    width: 50px;
+    height: 24px;
+    border-radius: 30px;
+    display: inline-block;
+    background-color: rgba(204,204,204,1);}
+    //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
+  > .toggle--checked {
+    background-color: rgb(179, 170, 255);
+    transition : 0.5s
+  }
+
+  > .toggle-circle {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: rgb(255,254,255);
+    transition : 0.5s
+    //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
+  } >.toggle--checked {
+    left: 27px;
+    transition : 0.5s
+  }
+`;
   
   
