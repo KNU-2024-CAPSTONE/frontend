@@ -15,6 +15,18 @@ import {
   import { Line, Bar } from 'react-chartjs-2';
   import { useSearchParams } from "react-router-dom";
 
+  const useDataFetch = (endpoint) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      fetch(endpoint)
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((error) => console.error("Fetch error:", error));
+    }, [endpoint]);
+  
+    return data;
+  };
 
 function S1() {  
 
@@ -33,19 +45,8 @@ function S1() {
     setSelected(button); 
   };
 
-  const [memberlog, setMemberlog] = useState([]);
-  const [purchaselog, setPurchaselog] = useState([]);
-
-  useEffect(() => {
-    fetch(`${baseURL}/api/customer/influx/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setMemberlog(data));
-  }, []);
-  useEffect(() => {
-    fetch(`${baseURL}/api/customer/sale/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => setPurchaselog(data));
-  }, []);
+  const memberlog = useDataFetch(`${baseURL}/api/customer/influx/${shopid}`);
+  const purchaselog = useDataFetch(`${baseURL}/api/customer/sale/${shopid}`);
 
   const ChartOfDate = (data0, datafield) => {
     const groupedData = {};
