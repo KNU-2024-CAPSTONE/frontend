@@ -35,24 +35,25 @@ function S3() {
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
   const button_categories = ["10대", "20대", "30대", "40대+", "남성", "여성"];
+  const toggleData = [
+    { id: 1, label: "별점 반영", key: "isStarCount", marginRight: "120px" },
+    { id: 2, label: "리뷰 반영", key: "isReview", marginRight: "120px" },
+    { id: 3, label: "등록일 반영", key: "isPostDate", marginRight: "98px" },
+  ];
 
   const recommend = useDataFetch(`${baseURL}/api/customer/sale/recommend/${shopid}`);
   const purchaselog = useDataFetch(`${baseURL}/api/customer/sale/product/${shopid}`);
-  const productReco = useDataFetch(`${baseURL}/api/recommend/${shopid}`);
-  const [isOn, setisOn] = useState(false);
+  const [productReco, setProductReco] = useState([]);
   const [selected, setSelected] = useState([]); 
 
   useEffect(() => {
-    fetch(`${baseURL}/api/customer/sale/product/${shopid}`)
+    fetch(`${baseURL}/api/recommend/${shopid}`)
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => setProductReco(data));
   }, []);
 
-  const handleClick = (button) => {
-    setSelected(button); 
-  };
-  const toggleHandler = () => {
-    setisOn(!isOn)
+  const toggleHandler = (key) => {
+    setProductReco((prev) => ({ ...prev, [key]: !prev[key] }));
   };
   const toggleSelection = (index) => {
     setSelected((prevSelected) =>
@@ -154,8 +155,8 @@ function S3() {
 
          <div className="main">
          <div className='bar2' style={{gap:'10px', marginLeft:'60px'}}>
-              <span className="title_2" style={{left:'120px'}}>유형별 인기상품</span>
-              <div style={{marginLeft: '110px'}}>
+              <span className="title_2" style={{left:'170px'}}>유형별 인기상품</span>
+              <div style={{marginLeft: '160px'}}>
                 {button_categories.map((category, index) => (
                  <button key={index} className="button1"
                  style={{backgroundColor: selected.includes(index) ? "white" : "rgba(228,228,228,1)",}}
@@ -168,7 +169,7 @@ function S3() {
                 <div className="box" style={{width: "500px", marginTop: "0px"}} >
                     <Pie className="graph" options={options1} data={data1} />
                 </div>
-                <div className="box" style={{width: "800px", marginTop: "0px"}}>
+                <div className="box" style={{width: "700px", marginTop: "0px"}}>
                 <div className="result">
                   <p className='text3'>1위 : {sortedKeywords[0]?.keyword || '없음'}</p>
                   <p className='text3'>2위 : {sortedKeywords[1]?.keyword || '없음'}</p>
@@ -186,28 +187,24 @@ function S3() {
                      <p>Loading...</p>
                      )}
                 </div>
-                <div className="box" style={{width: "800px"}}>
+                <div className="box" style={{width: "700px"}}>
                   <div> <span className="title_2">추천 알고리즘 관리</span> <div className="button3">설정</div> </div>
-                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>별점 반영</span>
-                    <ToggleContainer onClick={toggleHandler}> 
-                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
-                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
-                    </ToggleContainer>
-                    <span className="text4" style={{marginRight: '90px'}}>추천 상품 수</span> <input value={productReco.k} className='blank2'/> <span className='text5'>개</span>
-                  </div>
-                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>리뷰 반영</span>
-                    <ToggleContainer onClick={toggleHandler}> 
-                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
-                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
-                    </ToggleContainer>
-                    <span className="text4" style={{marginRight: '100px'}}>전환 비율</span> <input value={productReco.conversionRate} style={{width: '60px'}} className='blank2'/> <span className='text5'>%</span>
-                  </div>
-                  <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4" style={{marginRight: '95px', top: '2px'}}>리뷰 반영</span>
-                    <ToggleContainer onClick={toggleHandler}> 
-                      <span className={`toggle-container ${isOn ? "toggle--checked" : null}`}/>
-                      <span className={`toggle-circle ${isOn ? "toggle--checked" : null}`}/>
+                  <div style={{display: 'flex'}}>
+                  <div>
+                  {toggleData.map((item) => (
+                  <div key={item.id} style={{ margin: "15px", marginBottom: "0px" }}>
+                    <span className="text4" style={{ marginRight: item.marginRight, top: "2px" }}>{item.label}</span>
+                    <ToggleContainer onClick={() => toggleHandler(item.key)}>
+                      <span className={`toggle-container ${ productReco[item.key] ? "toggle--checked" : ""}`}/>
+                      <span className={`toggle-circle ${ productReco[item.key] ? "toggle--checked" : ""}`}/>
                     </ToggleContainer>
                   </div>
+                ))}
+                </div>
+                <div>
+                <div style = {{margin: '15px', marginLeft: '0px'}}><span className="text4" style={{marginRight: '90px'}}>추천 상품 수</span> <input value={productReco.k} className='blank2'/> <span className='text5'>개</span></div>
+                <div><span className="text4" style={{marginRight: '100px'}}>전환 비율</span> <input value={productReco.conversionRate} style={{width: '60px'}} className='blank2'/> <span className='text5'>%</span> </div>
+                </div> </div>
                 </div>
             </div>
 
