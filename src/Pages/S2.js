@@ -39,11 +39,6 @@ function S2() {
     { id: 4, label: "재발급 방지기간", key: "reIssue", unit: "개월" },
   ];
 
-  useEffect(() => {
-    fetch(`${baseURL}/api/outflux/${shopid}`)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
-  }, []);
 
   const [selected, setSelected] = useState("월간");
   const ofcoslog = useDataFetch(`${baseURL}/api/outflux/customers/${shopid}`);
