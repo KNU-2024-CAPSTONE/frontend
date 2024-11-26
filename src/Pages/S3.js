@@ -32,7 +32,7 @@ import {
 
 function S3() { 
 
-  const baseURL = 'http://localhost:8080';
+  const baseURL = 'http://3.34.133.252:8080';
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
   const button_categories = ["10대", "20대", "30대", "40대+", "남성", "여성"];
