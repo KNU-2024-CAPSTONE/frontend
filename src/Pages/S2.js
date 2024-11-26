@@ -32,15 +32,36 @@ function S2() {
   const baseURL = 'http://3.34.133.252:8080'
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
+  const inputData = [
+    { id: 1, label: "마지막 구매날짜", key: "lastPurchase", unit: "개월" },
+    { id: 2, label: "마지막 환불날짜", key: "lastRefund", unit: "개월" },
+    { id: 3, label: "지난달 환불비율", key: "refundPercent", unit: "%" },
+    { id: 4, label: "재발급 방지기간", key: "reIssue", unit: "개월" },
+  ];
+
+  useEffect(() => {
+    fetch(`${baseURL}/api/outflux/${shopid}`)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
+  }, []);
 
   const [selected, setSelected] = useState("월간");
-  const outfluxlog = useDataFetch(`${baseURL}/api/outflux/${shopid}`);
   const ofcoslog = useDataFetch(`${baseURL}/api/outflux/customers/${shopid}`);
   const loyallog = useDataFetch(`${baseURL}/api/outflux/loyal/${shopid}`);
+  const fetchedData = useDataFetch(`${baseURL}/api/outflux/${shopid}`);
+  const [outfluxlog, setOutflux] = useState([]);
 
   const handleClick = (button) => {
     setSelected(button); 
   };
+  const handleInputChange = (key, value) => {
+    setOutflux((prev) => ({...prev, [key]: value, }));
+  };
+  useEffect(() => {
+    if (fetchedData && Object.keys(fetchedData).length > 0) {
+      setOutflux(fetchedData);
+    }
+  }, [fetchedData]);
 
   const ChartOfDate = (data0, datafield) => {
     const outflux = {};  const loyal = {};
@@ -173,6 +194,61 @@ function S2() {
   const data1 = ChartOfDate(ofcoslog, 'postDate');
   const data2 = ChartOfGender(ofcoslog, 'postDate');
 
+  const handleSubmit = async () => {
+
+    const mainPayload = {
+      lastPurchase: outfluxlog.lastPurchase,
+      lastRefund: outfluxlog.lastRefund,
+      refundPercent: outfluxlog.refundPercent,
+      reIssue: outfluxlog.reIssue,
+    };
+
+    try {
+      const response = await fetch(`${baseURL}/api/outflux/${shopid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mainPayload),
+      });
+
+      if (response.ok) {
+        alert("설정이 성공적으로 저장되었습니다.");
+      } else {
+        alert("설정 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("서버와 연결에 실패했습니다.");
+    }
+  };
+
+  const handleSubmitSub = async () => {
+
+    const subPayload = {
+      purchaseWithCategory: outfluxlog.purchaseWithCategory,
+      purchaseNumber: outfluxlog.purchaseNumber,
+    };
+
+    try {
+      const response = await fetch(`${baseURL}/api/outflux/loyal/${shopid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(subPayload),
+      });
+
+      if (response.ok) {
+        alert("설정이 성공적으로 저장되었습니다.");
+      } else {
+        alert("설정 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("서버와 연결에 실패했습니다.");
+    }
+  };
 
     return (
       <div className="S2">
@@ -190,11 +266,14 @@ function S2() {
          <div className="main">
             <div className="main_2">
                 <div className="box"  style={{width: "580px"}}>
-                    <div> <span className="title_2">이탈 알고리즘 관리</span> <div className="button3">설정</div> </div>
-                    <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4">마지막 구매날짜</span> <input value={outfluxlog.lastPurchase} className='blank'/> <span className='text5'>개월</span> </div>
-                    <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4">마지막 환불날짜</span> <input value={outfluxlog.lastRefund}  className='blank'/> <span className='text5'>개월</span> </div>
-                    <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4">지난달 환불비율</span> <input value={outfluxlog.refundPercent} className='blank' style={{width: '60px'}}/> <span className='text5'>%</span> </div>
-                    <div style={{margin:'15px', marginBottom: '0px'}}><span className="text4">재발급 방지기간</span> <input value={outfluxlog.reIssue}className='blank'/> <span className='text5'>개월</span> </div>
+                    <div> <span className="title_2">이탈 알고리즘 관리</span> <div className="button3" onClick={handleSubmit}>설정</div> </div>
+                    {inputData.map((item) => (
+                    <div key={item.id} style={{ margin: "15px", marginBottom: "0px" }}>
+                      <span className="text4">{item.label}</span>
+                      <input value={outfluxlog[item.key]} onChange={(e) => handleInputChange(item.key, e.target.value)} className="blank" style={item.key === "refundPercent" ? { width: "60px" } : {}} />
+                      <span className="text5">{item.unit}</span>
+                    </div>
+                  ))}
                 </div>
                 <div className="box" style={{width: "530px"}}>
                     <span className="title_2">이탈·충성고객 추이</span>
@@ -205,10 +284,10 @@ function S2() {
                 </div>
                 <div className="main_2">
                 <div className="box" style={{width: "580px"}}>
-                    <div> <span className="title_2">충성 알고리즘 관리</span> <div className="button3">설정</div> </div>
+                    <div> <span className="title_2">충성 알고리즘 관리</span> <div className="button3" onClick={handleSubmitSub}>설정</div> </div>
                     <div style={{marginLeft: '100px', marginTop: '30px'}}>
-                      <span className="text5">최근</span> <input value={outfluxlog.purchaseWithCategory} className='blank2' /> <span className="text5">개월 동안 동일상품</span>
-                      <input value={outfluxlog.purchaseNumber} className='blank2'/> <span className="text5">회 이상 구매</span> 
+                      <span className="text5">최근</span> <input value={outfluxlog.purchaseWithCategory} onChange={(e) => handleInputChange("purchaseWithCategory", e.target.value)} className='blank2' /> <span className="text5">개월 동안 동일상품</span>
+                      <input value={outfluxlog.purchaseNumber} onChange={(e) => handleInputChange("purchaseNumber", e.target.value)} className='blank2'/> <span className="text5">회 이상 구매</span> 
                     </div>
                 </div>
                 <div className="box" style={{width: "600px"}}>
