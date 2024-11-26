@@ -30,7 +30,7 @@ import {
 
 function S1() {  
 
-  const baseURL = 'http://3.34.133.252:8080'
+  const baseURL = 'http://localhost:8080'
   const [searchParams] = useSearchParams();
   const shopid = searchParams.get("shopid");
 

@@ -9,7 +9,7 @@ import plusimg from "../img/plus.png";
 function CRM() {
 
   const [shoplog, setShoplog] = useState([]);
-  const baseURL = 'http://3.34.133.252:8080'
+  const baseURL = 'http://localhost:8080'
   
   useEffect(() => {
     fetch(`${baseURL}/api/shop`)
